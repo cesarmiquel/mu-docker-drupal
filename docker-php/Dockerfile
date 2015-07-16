@@ -1,7 +1,7 @@
 FROM gliderlabs/alpine
 
 # Install PHP
-RUN apk-install php php-common php-cli php-curl php-json php-mcrypt php-memcache php-fpm php-mysql php-apcu 
+RUN apk-install php php-common php-cli php-curl php-json php-mcrypt php-memcache php-fpm php-mysql php-apcu php-phar php-openssl php-ctype
 
 # Copy configuration
 COPY php-fpm.conf /etc/php/php-fpm.conf
