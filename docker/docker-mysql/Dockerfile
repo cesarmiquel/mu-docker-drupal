@@ -1,13 +1,19 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:3.1
 
-RUN apk-install mysql && mkdir -p /var/lib/mysql && mkdir -p /etc/mysql/conf.d
+ENV db_name drupal
+ENV db_user drupal
+ENV db_pass drupal
+
+RUN apk-install mysql mysql-client
+
+RUN mkdir -p /var/lib/mysql && mkdir -p /etc/mysql/conf.d
 
 COPY my.cnf /etc/mysql/
 
-VOLUME ["/data/db"]
+ADD ./entrypoint.sh /bin/entrypoint.sh
 
-ENTRYPOINT ["mysqld"]
+VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d/"]
 
 EXPOSE 3306
 
-CMD ["--skip-grant-tables"]
+CMD ["/bin/sh", "/bin/entrypoint.sh"]
