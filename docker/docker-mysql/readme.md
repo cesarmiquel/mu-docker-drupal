@@ -1,3 +1,20 @@
+### Build
+
+```
+docker build -t miquel/mu-db .
+```
+
+### Run container
+```
+docker -D=true run -d --name db \
+  --volumes-from data miquel/mu-db
+```
+
+### Run a shell in container
+```
+docker exec -i=true -t php /bin/sh
+```
+
 
 From image: gliderlabs/alpine:3.1
 
@@ -40,4 +57,3 @@ $ mkdir -p /tmp/empty/db
 $ docker run --rm --name "mysql-server" -v /tmp/empty/db:/var/lib/mysql yourname/mysql
 
 ```
-

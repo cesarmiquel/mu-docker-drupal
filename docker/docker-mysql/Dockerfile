@@ -1,10 +1,10 @@
-FROM gliderlabs/alpine:3.1
+FROM gliderlabs/alpine
 
 RUN apk-install mysql && mkdir -p /var/lib/mysql && mkdir -p /etc/mysql/conf.d
 
 COPY my.cnf /etc/mysql/
 
-VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d/"]
+VOLUME ["/data/db"]
 
 ENTRYPOINT ["mysqld"]
 
