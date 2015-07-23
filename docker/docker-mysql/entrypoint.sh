@@ -4,8 +4,8 @@ if [ ! -f /var/lib/mysql/ibdata1 ]; then
 
     mysql_install_db
 
-    echo "CREATE DATABASE $db_name;" | mysql
-    echo "GRANT ALL ON $db_name TO $db_user@'%' IDENTIFIED BY '$db_pass' WITH GRANT OPTION; FLUSH PRIVILEGES" | mysql
+    echo "use mysql; create database $db_name;" | mysql -u root -h 127.0.0.1
+    echo "grant all privileges on $db_name.* to $db_user@'%' identified by '$db_pass' with grant option; flush privileges;" | mysql -u root  -h 127.0.0.1
 
     killall mysqld
     sleep 1s

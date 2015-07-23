@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:3.1
+FROM gliderlabs/alpine
 
 ENV db_name drupal
 ENV db_user drupal
