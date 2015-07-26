@@ -7,7 +7,7 @@ docker build -t miquel/mu-db .
 ### Run container
 ```
 docker -D=true run -d --name db \
-  --volumes-from data miquel/mu-db
+  -p 11306:3306 --volumes-from data miquel/mu-db
 ```
 
 ### Run a shell in container
