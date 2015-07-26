@@ -29,7 +29,7 @@ if [[ $MYSQL_DATABASE != "" ]]; then
     fi
 fi
 
-/usr/bin/mysqld_safe --bootstrap --verbose=0 < $tfile
+mysqld --bootstrap --verbose=0 < $tfile
 rm -f $tfile
 
-exec /usr/bin/mysqld_safe
+mysqld
