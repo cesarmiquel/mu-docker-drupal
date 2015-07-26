@@ -11,6 +11,10 @@ exec() {
 
 ROOTFS=`pwd`
 
+# Build db container
+cd $ROOTFS/docker/docker-mysql
+exec 'docker build -t miquel/mu-mysql .'
+
 # Build php container
 cd $ROOTFS/docker/docker-php
 exec 'docker build -t miquel/mu-php .'

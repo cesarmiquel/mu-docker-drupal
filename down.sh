@@ -11,6 +11,6 @@ exec() {
 
 ROOTFS=`pwd`
 
-exec 'docker stop data php nginx';
-exec 'docker rm data php nginx';
+exec 'docker stop data db php nginx';
+exec 'docker rm data db php nginx';
 
