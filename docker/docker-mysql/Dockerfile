@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:3.2
 
 ENV MYSQL_ROOT_PASSWORD r00t
 ENV MYSQL_DATABASE drupal
