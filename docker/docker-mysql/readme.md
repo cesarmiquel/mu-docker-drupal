@@ -12,7 +12,7 @@ docker -D=true run -d --name db \
 
 ### Run a shell in container
 ```
-docker exec -i=true -t php /bin/sh
+docker exec -i=true -t db /bin/sh
 ```
 
 
