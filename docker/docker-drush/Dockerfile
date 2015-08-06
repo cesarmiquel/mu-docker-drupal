@@ -1,4 +1,4 @@
-FROM alpine/composer
+FROM foo/composer
 
 # Install Drush 7.
 RUN composer global require drush/drush:7.*
@@ -10,6 +10,6 @@ RUN ln -s /root/.composer/vendor/bin/drush.php /usr/local/bin/drush
 # Display which version of Drush was installed
 RUN drush --version
 
-WORKDIR /var/www/site
+WORKDIR /data/docroot
 
 ENTRYPOINT ["drush"]
