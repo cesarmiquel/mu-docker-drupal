@@ -1,13 +1,13 @@
-FROM alpine/php-fpm
+FROM foo/php-fpm
 
 ENV COMPOSER_CACHE_DIR=/cache
 
-RUN curl -k -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    apk del curl && \
-    rm -rf /var/cache/apk/*
+RUN \
+  php -r "readfile('https://getcomposer.org/installer');" \
+  | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /var/www/site
+WORKDIR /data/docroot
 
-VOLUME ["/var/www/site", "/cache"]
+VOLUME ["/data/docroot", "/cache"]
 
 ENTRYPOINT ["/usr/local/bin/composer", "--ignore-platform-reqs", "--no-interaction"]
