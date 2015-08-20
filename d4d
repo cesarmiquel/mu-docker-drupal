@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+
+import os
+import argparse
+
+LOCK_FILE = '.d4d-running'
+
+# @TODO Remove ugly global
+debug = True
+rootfs = None
+
+# Helper class for colors
+class bgcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+# PS command ----------------------------------------------------------------------------
+def cmd_ps():
+    exec_cmd('docker ps -a')
+
+# Up command ----------------------------------------------------------------------------
+def cmd_up():
+
+    # dont't allow up if running
+    if containers_running():
+        print("Already running containers. Use down first.")
+        return
+
+    # Launch data container
+    cmd = 'docker run --name data -v %s/app:/data:rw \
+      -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine /bin/true'
+    exec_cmd(cmd % (rootfs, rootfs))
+
+    # Launch db container
+    exec_cmd('docker -D=true run -d --name db -p 13306:3306 --volumes-from data d4d/mu-mysql')
+
+    # Launch php container
+    exec_cmd('docker -D=true run -d --name php --link db:db --volumes-from data d4d/mu-php')
+
+    # Launch nginx container
+    exec_cmd('docker -D=true run -d --name nginx --link php:php -p 8000:80 --volumes-from data d4d/mu-nginx')
+
+    # Create lock file
+    create_lock_file()
+
+
+# Down command ----------------------------------------------------------------------------
+def cmd_down():
+    if containers_running():
+        exec_cmd('docker stop data db php nginx')
+        exec_cmd('docker rm data db php nginx')
+        delete_lock_file()
+
+# Clean command ----------------------------------------------------------------------------
+def cmd_clean():
+    images = ['d4d/mu-mysql', 'd4d/mu-php', 'd4d/mu-nginx']
+    for image_name in images:
+        exec_cmd('docker rmi ' + image_name)
+
+# Build command ----------------------------------------------------------------------------
+def cmd_build():
+
+    print('Executing command build...')
+
+    os.chdir(rootfs + '/docker/docker-mysql')
+    exec_cmd('docker build -t d4d/mu-mysql .')
+
+    os.chdir(rootfs + '/docker/docker-php')
+    exec_cmd('docker build -t d4d/mu-php .')
+
+    os.chdir(rootfs + '/docker/docker-nginx')
+    exec_cmd('docker build -t d4d/mu-nginx .')
+
+    os.chdir(rootfs)
+
+    app_dir = rootfs + '/app'
+    if os.path.exists(app_dir) != True:
+        exec_cmd('mkdir -p %s/db %s/logs %s/project' % (app_dir, app_dir, app_dir))
+        
+
+# Helpers  ---------------------------------------------------------------------
+def exec_cmd(cmd):
+    if debug:
+        print("Executing [" + bgcolors.OKGREEN + cmd + bgcolors.ENDC + "]")
+    os.system(cmd)
+
+def containers_running():
+    if os.path.exists(rootfs + '/' + LOCK_FILE):
+        return True
+    return False
+
+def create_lock_file():
+    open(rootfs + '/' + LOCK_FILE, 'a').close()
+
+def delete_lock_file():
+    if containers_running():
+        os.remove(rootfs + '/' + LOCK_FILE)
+
+
+# ------------------------------------------------------------------------------
+# Main entry point
+# ------------------------------------------------------------------------------
+if __name__ == "__main__":
+
+    # Parse args
+    parser = argparse.ArgumentParser(prog = 'd4d')
+    parser.add_argument('command', nargs=1, choices=['clean', 'up', 'down', 'build', 'ps'], help='Command to execute.')
+    args = parser.parse_args()
+
+    # Setup global path
+    rootfs = os.getcwd()
+
+    # Process commands
+    if args.command[0] == 'up':
+        cmd_up()
+    elif args.command[0] == 'down':
+        cmd_down()
+    elif args.command[0] == 'build':
+        cmd_build()
+    elif args.command[0] == 'clean':
+        cmd_clean()
+    elif args.command[0] == 'ps':
+        cmd_ps()
+
