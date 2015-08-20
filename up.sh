@@ -9,7 +9,25 @@ exec() {
     eval $CMD
 }
 
+print() {
+    STRING=$*
+    S="\033[37m\033[1;32m$STRING\033[0;37m]"
+    echo -e $S
+}
+
 ROOTFS=`pwd`
+
+# Check if app directory exists
+APP_DIR=$ROOTFS/app
+if [ ! -d $APP_DIR ]
+then
+    print 'The app directory does not exists. Please run build.sh first.'
+    exit
+fi
+
+print ''
+print 'Launching docker components'
+print '---------------------------'
 
 # Launch data container
 exec "docker run --name data -v $ROOTFS/app:/data:rw \
