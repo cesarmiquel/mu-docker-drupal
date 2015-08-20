@@ -10,8 +10,8 @@ GIT=`which git`
 if [ ! -d $ROOTFS/app/project/docroot ]
 then
     print "Downloading latest Drupal Core ..."
-    exec 'php -r "readfile(\"http://ftp.drupal.org/files/projects/drupal-7.38.tar.gz\");" | tar zxf -'
-    exec 'mv drupal-7.38 app/project/docroot'
+    exec 'php -r "readfile(\"http://ftp.drupal.org/files/projects/drupal-7.39.tar.gz\");" | tar zxf -'
+    exec 'mv drupal-7.39 app/project/docroot'
     exec 'ln -s project/docroot app/docroot'
 
     print "Cloning git repo ..."
