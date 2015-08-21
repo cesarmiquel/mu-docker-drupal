@@ -1,4 +1,4 @@
-FROM alpine/php-fpm
+FROM d4d/mu-php
 
 ENV COMPOSER_CACHE_DIR=/cache
 
@@ -6,8 +6,8 @@ RUN curl -k -sS https://getcomposer.org/installer | php -- --install-dir=/usr/lo
     apk del curl && \
     rm -rf /var/cache/apk/*
 
-WORKDIR /var/www/site
+WORKDIR /data/project/docroot
 
-VOLUME ["/var/www/site", "/cache"]
+VOLUME ["/data/project/docroot", "/cache"]
 
-ENTRYPOINT ["/usr/local/bin/composer", "--ignore-platform-reqs", "--no-interaction"]
+ENTRYPOINT ["/usr/local/bin/composer", "--no-interaction"]
