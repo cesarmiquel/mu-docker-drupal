@@ -59,7 +59,7 @@ def cmd_down():
 
 # Clean command ----------------------------------------------------------------------------
 def cmd_clean():
-    images = ['d4d/mu-mysql', 'd4d/mu-php', 'd4d/mu-nginx']
+    images = ['d4d/mu-mysql', 'd4d/mu-php', 'd4d/mu-nginx', 'd4d/mu-composer', 'd4d/mu-drush']
     for image_name in images:
         exec_cmd('docker rmi ' + image_name)
 
@@ -77,12 +77,30 @@ def cmd_build():
     os.chdir(rootfs + '/docker/docker-nginx')
     exec_cmd('docker build -t d4d/mu-nginx .')
 
+    os.chdir(rootfs + '/docker/docker-composer')
+    exec_cmd('docker build -t d4d/mu-composer .')
+
+    os.chdir(rootfs + '/docker/docker-drush')
+    exec_cmd('docker build -t d4d/mu-drush .')
+
     os.chdir(rootfs)
 
     app_dir = rootfs + '/app'
     if os.path.exists(app_dir) != True:
         exec_cmd('mkdir -p %s/db %s/logs %s/project' % (app_dir, app_dir, app_dir))
         
+def cmd_composer(args):
+    args_string = ' '.join([str(i) for i in args])
+    cmd = 'docker run -ti --rm --name composer --link db:db --volumes-from data d4d/mu-composer '
+    cmd += args_string
+    exec_cmd(cmd)
+
+def cmd_drush(args):
+    args_string = ' '.join([str(i) for i in args])
+    cmd = 'docker run -ti --rm --name drush --link db:db --volumes-from data d4d/mu-drush '
+    cmd += args_string
+    exec_cmd(cmd)
+
 
 # Helpers  ---------------------------------------------------------------------
 def exec_cmd(cmd):
@@ -110,7 +128,8 @@ if __name__ == "__main__":
 
     # Parse args
     parser = argparse.ArgumentParser(prog = 'd4d')
-    parser.add_argument('command', nargs=1, choices=['clean', 'up', 'down', 'build', 'ps'], help='Command to execute.')
+    parser.add_argument('command', nargs=1, choices=['clean', 'up', 'down', 'build', 'ps', 'composer', 'drush'], help='Command to execute.')
+    parser.add_argument('args', nargs='*', help='Additiona alrguments')
     args = parser.parse_args()
 
     # Setup global path
@@ -127,4 +146,8 @@ if __name__ == "__main__":
         cmd_clean()
     elif args.command[0] == 'ps':
         cmd_ps()
+    elif args.command[0] == 'composer':
+        cmd_composer(args.args)
+    elif args.command[0] == 'drush':
+        cmd_drush(args.args)
 
