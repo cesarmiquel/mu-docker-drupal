@@ -8,6 +8,6 @@ RUN curl -k -sS https://getcomposer.org/installer | php -- --install-dir=/usr/lo
 
 WORKDIR /data/project/docroot
 
-VOLUME ["/data/project/docroot", "/cache"]
+VOLUME ["/cache"]
 
 ENTRYPOINT ["/usr/local/bin/composer", "--no-interaction"]
