@@ -32,6 +32,10 @@ def cmd_up():
         print("Already running containers. Use down first.")
         return
 
+    if os.path.exists(rootfs + '/app/project/docroot') != True:
+        print("Must run build-site.sh first.")
+        return
+
     # Launch data container
     cmd = 'docker run --name data -v %s/app:/data:rw \
       -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine /bin/true'
