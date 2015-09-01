@@ -10,7 +10,7 @@ GIT=`which git`
 if [ ! -d $ROOTFS/app/project/docroot ]
 then
     print "Downloading latest Drupal Core ..."
-    exec 'php -r "readfile(\"http://ftp.drupal.org/files/projects/drupal-7.39.tar.gz\");" | tar zxf -'
+    exec 'wget -O - http://ftp.drupal.org/files/projects/drupal-7.39.tar.gz | tar zxf -'
     exec 'mv drupal-7.39 app/project/docroot'
     exec 'ln -s project/docroot app/docroot'
 
@@ -33,7 +33,9 @@ then
     exec "cp $ROOTFS/local.settings.php $DEFAULT_DIR"
 
     print ''
-    print 'Point your browser to: http://localhost:8000/install.php'
+    print '----------------------------------------------------------------------'
+    print 'Levantar contenedores con ./d4d up y luego entrar a:'
+    print 'http://localhost:8000/install.php'
 fi
 
 # Add local settings and files directory
