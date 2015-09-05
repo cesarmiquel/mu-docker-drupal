@@ -18,3 +18,8 @@ $databases = array (
     ),  
   ),  
 );
+
+$conf['memcache_servers'] = array(
+  'memcached:11211' => 'default',
+);
+
