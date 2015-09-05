@@ -61,7 +61,7 @@ def cmd_up():
 def cmd_down():
     if containers_running():
         exec_cmd('docker stop data db memcached php nginx')
-        exec_cmd('docker rm data db memcached php nginx')
+        exec_cmd('docker rm -v data db memcached php nginx')
         delete_lock_file()
 
 # Clean command ----------------------------------------------------------------------------
