@@ -38,7 +38,7 @@ def cmd_up():
 
     # Launch data container
     cmd = 'docker run --name data -v %s/app:/data:rw \
-      -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine /bin/true'
+            -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine:3.2 /bin/true'
     exec_cmd(cmd % (rootfs, rootfs))
 
     # Launch db container
