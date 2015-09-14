@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:3.2
 
 # Install PHP
 RUN apk-install php php-common php-cli php-curl php-gd php-xml php-dom php-json php-mcrypt php-memcache php-fpm php-mysql php-pdo php-pdo_mysql php-pdo_sqlite php-sqlite3 php-apcu php-phar php-openssl php-ctype php-zip mysql-client
