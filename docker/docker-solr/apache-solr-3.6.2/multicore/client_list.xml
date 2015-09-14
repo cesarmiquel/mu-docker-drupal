@@ -1,0 +1,33 @@
+<opt>
+  <subscription id="AHMY-13627">
+    <title>TestSite2</title>
+    <url>http://localhost/drupal-6.16/</url>
+    <search_service_enabled>1</search_service_enabled>
+    <product>Acquia Network 30-Day Trial</product>
+    <derived_key>c97aced41da4919164602687b0c20b8ced21aeb7</derived_key>
+    <farm_id>search0.acquia.us</farm_id>
+    <nid>1507481</nid>
+    <identifier>AHMY-13627</identifier>
+  </subscription>
+  <subscription id="BGHX-13612">
+    <title>Jello</title>
+    <url>http://www.example.com</url>
+    <search_service_enabled>1</search_service_enabled>
+    <product>Acquia Network 30-Day Trial</product>
+    <derived_key>bb5b6a3803f648c8330594d51cd615c4f9681cce</derived_key>
+    <farm_id>search0.acquia.us</farm_id>
+    <nid>1587459</nid>
+    <identifier>BGHX-13612</identifier>
+  </subscription>
+  <subscription id="d7-core">
+    <title>Jello</title>
+    <url>http://www.example.com</url>
+    <search_service_enabled>1</search_service_enabled>
+    <product>Acquia Network 30-Day Trial</product>
+    <derived_key>bb5b6a3803f648c8330594d51cd615c4f9681cce</derived_key>
+    <farm_id>search0.acquia.us</farm_id>
+    <nid>1587459</nid>
+    <identifier>d7-core</identifier>
+  </subscription>
+
+</opt>
