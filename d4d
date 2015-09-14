@@ -38,17 +38,23 @@ def cmd_up():
 
     # Launch data container
     cmd = 'docker run --name data -v %s/app:/data:rw \
-      -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine /bin/true'
+            -v %s/app/db:/var/lib/mysql:rw gliderlabs/alpine:3.2 /bin/true'
     exec_cmd(cmd % (rootfs, rootfs))
 
     # Launch db container
     exec_cmd('docker -D=true run -d --name db -p 13306:3306 --volumes-from data d4d/mu-mysql')
 
+    # Launch memcached container
+    exec_cmd('docker -D=true run -d --name memcached d4d/mu-memcached')
+
+    # Launch solr container
+    exec_cmd('docker -D=true run -d --name solr d4d/mu-solr')
+
     # Launch php container
-    exec_cmd('docker -D=true run -d --name php --link db:db --volumes-from data d4d/mu-php')
+    exec_cmd('docker -D=true run -d --name php --link solr --link db:db --volumes-from data d4d/mu-php')
 
     # Launch nginx container
-    exec_cmd('docker -D=true run -d --name nginx --link php:php -p 8000:80 --volumes-from data d4d/mu-nginx')
+    exec_cmd('docker -D=true run -d --name nginx --link php:php --link memcached -p 8000:80 --volumes-from data d4d/mu-nginx')
 
     # Create lock file
     create_lock_file()
@@ -57,13 +63,13 @@ def cmd_up():
 # Down command ----------------------------------------------------------------------------
 def cmd_down():
     if containers_running():
-        exec_cmd('docker stop data db php nginx')
-        exec_cmd('docker rm data db php nginx')
+        exec_cmd('docker stop data db memcached php nginx')
+        exec_cmd('docker rm -v data db memcached php nginx')
         delete_lock_file()
 
 # Clean command ----------------------------------------------------------------------------
 def cmd_clean():
-    images = ['d4d/mu-mysql', 'd4d/mu-php', 'd4d/mu-nginx', 'd4d/mu-composer', 'd4d/mu-drush']
+    images = ['d4d/mu-mysql', 'd4d/mu-memcached', 'd4d/mu-php', 'd4d/mu-nginx', 'd4d/mu-composer', 'd4d/mu-drush', 'd4d/solr']
     for image_name in images:
         exec_cmd('docker rmi ' + image_name)
 
@@ -75,11 +81,17 @@ def cmd_build():
     os.chdir(rootfs + '/docker/docker-mysql')
     exec_cmd('docker build -t d4d/mu-mysql .')
 
+    os.chdir(rootfs + '/docker/docker-memcached')
+    exec_cmd('docker build -t d4d/mu-memcached .')
+
     os.chdir(rootfs + '/docker/docker-php')
     exec_cmd('docker build -t d4d/mu-php .')
 
     os.chdir(rootfs + '/docker/docker-nginx')
     exec_cmd('docker build -t d4d/mu-nginx .')
+
+    os.chdir(rootfs + '/docker/docker-solr')
+    exec_cmd('docker build -t d4d/mu-solr .')
 
     os.chdir(rootfs + '/docker/docker-composer')
     exec_cmd('docker build -t d4d/mu-composer .')
@@ -101,7 +113,7 @@ def cmd_composer(args):
 
 def cmd_drush(args):
     args_string = ' '.join([str(i) for i in args])
-    cmd = 'docker run -ti --rm --name drush --link db:db --volumes-from data d4d/mu-drush '
+    cmd = 'docker run -ti --rm --name drush --link db:db --link memcached --volumes-from data d4d/mu-drush '
     cmd += args_string
     exec_cmd(cmd)
 
